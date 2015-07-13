@@ -1,60 +1,63 @@
-var client = new XMLHttpRequest();
-client.onreadystatechange = xmlHandler;
-client.open("GET", "/images/sprite/sheet.xml");
-client.send();
+function loadAssets(url) {
+	var client = new XMLHttpRequest();
+	client.onreadystatechange = function(){
+		if (this.readyState == 4) {
+			if (this.status == 200 || this.status === 0) {
+				if (this.responseXML !== null) {
+					var x = this.responseXML.getElementsByTagName("SubTexture");
+					if (x === null ) return;
 
-function xmlHandler() {
-	if (this.readyState == 4) {
-		if (this.status == 200 || this.status === 0) {
-			if (this.responseXML !== null) {
-				var x = this.responseXML.getElementsByTagName("image");
-				if (x === null ) return;
+					var imgMap = {};
 
-				for (var n = 0; n < x.length; n++) {
-					var atlasImage = new AtlasImage();
-					atlasImage.load(x[n]);
-					atlasMap[x[n].getAttribute("name")] = atlasImage;
+					for (var n = 0; n < x.length; n++) {
+						var atlasImage = new AtlasImage();
+						atlasImage.load(x[n]);
+						imgMap[x[n].getAttribute("name")] = atlasImage;
+					}
+
+					localStorage.setItem('imageMap', JSON.stringify(imgMap));
 				}
-
-				init2();
+				else {
+					alert("this.responseXML == null");
+				}
 			}
 			else {
-				alert("this.responseXML == null");
+				alert("this.status = " + this.status);
 			}
 		}
-		else {
-			alert("this.status = " + this.status);
-		}
-	}
+	};
+	client.open("GET", url);
+	client.send();
 }
 
-function AtlasImage()
-{
+function AtlasImage() {
 	this.m_x;
 	this.m_y;
 	this.m_width;
 	this.m_height;
 	this.m_xOffset;
 	this.m_yOffset;
+
 	this.load = function(elem) {
-		this.m_x = parseInt(elem.getAttribute("x")); 
-		this.m_y = parseInt(elem.getAttribute("y")); 
-		this.m_width = parseInt(elem.getAttribute("width"));
-		this.m_height = parseInt(elem.getAttribute("height"));
+		this.m_x = parseInt(elem.m_x); 
+		this.m_y = parseInt(elem.m_y); 
+		this.m_width = parseInt(elem.m_width);
+		this.m_height = parseInt(elem.m_height);
 		// offset is an optional parameter
-		if (elem.getAttribute("xOffset"))
-			this.m_xOffset = parseInt(elem.getAttribute("xOffset"));
+		if (elem.m_xOffset)
+			this.m_xOffset = parseInt(elem.m_xOffset);
 		else
 			this.m_xOffset = 0;
-		if (elem.getAttribute("yOffset"))
-			this.m_yOffset = parseInt(elem.getAttribute("yOffset"));
+		if (elem.m_xOffset)
+			this.m_yOffset = parseInt(elem.m_yOffset);
 		else
 			this.m_yOffset = 0;
-	}
-	this.render = function(x, y) {
-		context.drawImage(atlas, this.m_x, this.m_y,
-		this.m_width, this.m_height, 
-		this.m_xOffset+x, this.m_yOffset+y, 
-		this.m_width, this.m_height);  
-	}
+	};
+
+	this.render = function(src, x, y) {
+		ctx.drawImage(src, this.m_x, this.m_y,
+		this.m_width, this.m_height,
+		this.m_xOffset+x, this.m_yOffset+y,
+		this.m_width, this.m_height);
+	};
 }
