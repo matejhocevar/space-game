@@ -12,6 +12,21 @@ if(localStorage.getItem('imageMap') === null) {
 }
 imageMap = JSON.parse(localStorage.getItem('imageMap'));
 
+// Meteor init
+var meteors = [];
+var meteorsList = subset(imageMap, "meteor");
+
+var initMeteors = function(n) {
+	var numMeteors = Math.random() * n;
+	for(var i=0; i < numMeteors; i++) {
+		var m = new AtlasImage();
+		m.name = meteorsList[Math.floor(Math.random() * meteorsList.length)];
+		m.m_x = randomW();
+		m.m_y = randomH();
+		meteors[i] = m;
+	}
+};
+
 var imageMapReady = false;
 var imageMapSprite = new Image();
 imageMapSprite.onload = function() {
@@ -46,7 +61,7 @@ var monstersCaught = 0;
 // Handle keyboard controls
 var keysDown = {};
 
-addEventListener("mouseclick", function(e) {
+addEventListener("click", function(e) {
 	console.log("mouse clicked");
 }, false);
 
@@ -72,6 +87,8 @@ var reset = function(heroX, heroY) {
 	// Throw the monster somewhere on the screen randomly
 	monster.x = 32 + randomW();
 	monster.y = 32 + randomH();
+
+	initMeteors(10);
 };
 
 var randomW = function() {
@@ -85,25 +102,26 @@ var randomH = function() {
 // Update game objects
 var update = function (modifier) {
 	if (87 in keysDown) { // Player holding up
-		hero.y -= hero.speed * modifier;
+		if(hero.y > 0)
+			hero.y -= hero.speed * modifier;
 	}
 	if (83 in keysDown) { // Player holding down
-		hero.y += hero.speed * modifier;
+		if(hero.y < canvas.height)
+			hero.y += hero.speed * modifier;
 	}
 	if (65 in keysDown) { // Player holding left
-		hero.x -= hero.speed * modifier;
+		if(hero.x > 0)
+			hero.x -= hero.speed * modifier;
 	}
 	if (68 in keysDown) { // Player holding right
-		hero.x += hero.speed * modifier;
+		if(hero.x < canvas.width)
+			hero.x += hero.speed * modifier;
 	}
 
 	hero.angle = Math.atan2(
 		hero.y - mouse.y,
 		hero.x - mouse.x
 	) - 90 * Math.PI / 180;
-
-	// Outside of the map?
-
 
 	// Are they touching?
 	if (
@@ -128,7 +146,16 @@ var render = function () {
 	}
 
 	if(imageMapReady) {
+		// spaceship
 		renderSprite("playerShip3_green", hero.x, hero.y, hero.angle);
+		renderSprite("engine3", hero.x, hero.y, hero.angle);
+
+		// meteors
+		for(var i=0; i < meteors.length; i++) {
+			var m = meteors[i];
+			m.render(imageMapSprite);
+			// renderSprite(m.name, m.m_x, m.m_y, 0);
+		}
 	}
 
 	if (monsterReady) {

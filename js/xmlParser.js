@@ -31,6 +31,7 @@ function loadAssets(url) {
 }
 
 function AtlasImage() {
+	this.name;
 	this.m_x;
 	this.m_y;
 	this.m_width;
@@ -63,7 +64,20 @@ function AtlasImage() {
 		this.m_width, this.m_height,
 		-(this.m_width/2), -(this.m_height/2),
 		this.m_width, this.m_height);
-		// ctx.drawImage(src, -(this.width/2), -(this.height/2));
 	};
-	
+}
+
+function subset(map, name) {
+	var arr = [];
+	var i = 0;
+	for(var img in map) {
+		if(img.indexOf(name) > -1) {
+			var tmp = new AtlasImage();
+			tmp.load(img);
+			arr[i] = tmp;
+			i++;
+		}
+	}
+
+	return arr;
 }
