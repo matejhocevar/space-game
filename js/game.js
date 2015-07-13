@@ -98,9 +98,9 @@ var update = function (modifier) {
 	}
 
 	hero.angle = Math.atan2(
-            hero.y - mouse.y,
-            hero.x - mouse.x
-        ) * 180 / Math.PI;
+		hero.y - mouse.y,
+		hero.x - mouse.x
+	) - 90 * Math.PI / 180;
 
 	// Outside of the map?
 
@@ -128,7 +128,6 @@ var render = function () {
 	}
 
 	if(imageMapReady) {
-		hero.angle = Math.atan2(hero.y - mouse.y, hero.x - mouse.x) * 180 / Math.PI;
 		renderSprite("playerShip3_green", hero.x, hero.y, hero.angle);
 	}
 
@@ -150,9 +149,9 @@ var renderSprite = function(name, x, y, angle) {
 		var cockpit = new AtlasImage();
 		cockpit.load(imageMap[name]);
 		ctx.save();
-		// ctx.translate(x, y);
+		ctx.translate(x, y);
 		ctx.rotate(angle);
-		cockpit.render(imageMapSprite, x, y);
+		cockpit.render(imageMapSprite);
 		ctx.restore();
 	}
 	catch(e) {
@@ -181,5 +180,5 @@ requestAnimationFrame = w.requestAnimationFrame || w.webkitRequestAnimationFrame
 
 // Let's play this game!
 var then = Date.now();
-reset(500, 500);
+reset(130, 130);
 main();

@@ -44,20 +44,24 @@ function AtlasImage() {
 		this.m_width = parseInt(elem.m_width);
 		this.m_height = parseInt(elem.m_height);
 		// offset is an optional parameter
-		if (elem.m_xOffset)
+		if (elem.m_xOffset) {
 			this.m_xOffset = parseInt(elem.m_xOffset);
-		else
+		}
+		else {
 			this.m_xOffset = 0;
-		if (elem.m_xOffset)
+		}
+		if (elem.m_xOffset) {
 			this.m_yOffset = parseInt(elem.m_yOffset);
-		else
+		}
+		else {
 			this.m_yOffset = 0;
+		}
 	};
 
-	this.render = function(src, x, y) {
+	this.render = function(src) {
 		ctx.drawImage(src, this.m_x, this.m_y,
 		this.m_width, this.m_height,
-		-((this.m_xOffset + x)/2), -((this.m_yOffset + y)/2),
+		-(this.m_width/2), -(this.m_height/2),
 		this.m_width, this.m_height);
 		// ctx.drawImage(src, -(this.width/2), -(this.height/2));
 	};
