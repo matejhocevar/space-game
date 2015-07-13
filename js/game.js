@@ -67,6 +67,7 @@ addEventListener("keyup", function (e) {
 var reset = function(heroX, heroY) {
 	hero.x = heroX;
 	hero.y = heroY;
+	hero.angle = 0;
 
 	// Throw the monster somewhere on the screen randomly
 	monster.x = 32 + randomW();
@@ -95,6 +96,11 @@ var update = function (modifier) {
 	if (68 in keysDown) { // Player holding right
 		hero.x += hero.speed * modifier;
 	}
+
+	hero.angle = Math.atan2(
+            hero.y - mouse.y,
+            hero.x - mouse.x
+        ) * 180 / Math.PI;
 
 	// Outside of the map?
 
@@ -144,7 +150,7 @@ var renderSprite = function(name, x, y, angle) {
 		var cockpit = new AtlasImage();
 		cockpit.load(imageMap[name]);
 		ctx.save();
-		ctx.translate(x + cockpit.width/2, y + cockpit.height/2); //move focus to middle position (middle of the ship)
+		// ctx.translate(x, y);
 		ctx.rotate(angle);
 		cockpit.render(imageMapSprite, x, y);
 		ctx.restore();

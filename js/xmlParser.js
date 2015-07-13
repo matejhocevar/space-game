@@ -57,7 +57,9 @@ function AtlasImage() {
 	this.render = function(src, x, y) {
 		ctx.drawImage(src, this.m_x, this.m_y,
 		this.m_width, this.m_height,
-		this.m_xOffset+x, this.m_yOffset+y,
+		-((this.m_xOffset + x)/2), -((this.m_yOffset + y)/2),
 		this.m_width, this.m_height);
+		// ctx.drawImage(src, -(this.width/2), -(this.height/2));
 	};
+	
 }
